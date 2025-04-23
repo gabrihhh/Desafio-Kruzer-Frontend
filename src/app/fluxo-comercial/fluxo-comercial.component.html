@@ -1,13 +1,14 @@
 <div class="fluxo-page">
-    <h2>Fluxo Comercial</h2>
-    <h5>Ao atualizar, os negócios ganhos são salvos no banco e os pedidos são criados automaticamente na Bling.</h5>
+  <h2>Fluxo Comercial</h2>
+  <h5>Ao atualizar, os negócios ganhos são salvos no banco e os pedidos são criados automaticamente na Bling.</h5>
 
-    <div>
-      <button mat-flat-button color="primary" (click)="atualizarDados()">
-        Atualizar
-      </button>
-    </div>
+  <div>
+    <button mat-flat-button color="primary" (click)="atualizarDados()">
+      Atualizar
+    </button>
+  </div>
 
+  <div class="tabela-container">
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
       <ng-container matColumnDef="person_name">
@@ -33,4 +34,7 @@
       <tr mat-header-row *matHeaderRowDef="['person_name', 'org_name', 'formatted_value', 'won_time']"></tr>
       <tr mat-row *matRowDef="let row; columns: ['person_name', 'org_name', 'formatted_value', 'won_time']"></tr>
     </table>
+
+    <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div>
 </div>

@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { ApiService } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-fluxo-comercial',
@@ -14,14 +17,18 @@ import { MatButtonModule } from '@angular/material/button';
     CommonModule, 
     MatToolbarModule,
     MatSnackBarModule,
-    MatButtonModule
+    MatButtonModule,
+    MatPaginatorModule,
+    MatSortModule
   ],
   templateUrl: './fluxo-comercial.component.html',
   styleUrls: ['./fluxo-comercial.component.scss'],
 })
-export class FluxoComercialComponent implements OnInit {
+export class FluxoComercialComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['id', 'title', 'formatted_value', 'won_time'];
-  public dataSource = [];
+  public dataSource = new MatTableDataSource<any>([]);
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private apiService: ApiService,
@@ -29,12 +36,18 @@ export class FluxoComercialComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.carregarDados();
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+  }
+
+  carregarDados() {
     this.apiService.refreshDados().subscribe({
       next: (res: any) => {
-        console.log(res);
-  
-        this.dataSource = Array.isArray(res.data) ? res.data : [];
-  ;
+        const dados = Array.isArray(res.data) ? res.data : [];
+        this.dataSource.data = dados;
       },
       error: (err: any) => {
         console.error('Erro ao buscar dados do servidor:', err);
@@ -50,10 +63,10 @@ export class FluxoComercialComponent implements OnInit {
     });
   }
 
-  atualizarDados(){
+  atualizarDados() {
     this.apiService.refreshDados().subscribe({
       next: (res: any) => {
-        this.dataSource = Array.isArray(res.data) ? res.data : [];
+        this.dataSource.data = Array.isArray(res.data) ? res.data : [];
         this.snackBar.open(
           res.message,
           'Fechar',
@@ -62,7 +75,6 @@ export class FluxoComercialComponent implements OnInit {
             panelClass: ['snackbar-erro']
           }
         );
-  ;
       },
       error: (err: any) => {
         console.error('Erro ao buscar dados do servidor:', err);
@@ -76,6 +88,5 @@ export class FluxoComercialComponent implements OnInit {
         );
       }
     });
-  };
-  
+  }
 }

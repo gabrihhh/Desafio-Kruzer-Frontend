@@ -28,5 +28,17 @@
   table{
     max-height: 400px;
     overflow-y: auto;
+    width: 100%;
   }
 } 
+
+.tabela-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+mat-paginator {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
